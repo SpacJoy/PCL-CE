@@ -1,4 +1,4 @@
-using FluentValidation;
+﻿using FluentValidation;
 using PCL.Core.App;
 using PCL.Core.App.Localization;
 using PCL.Core.Logging;
@@ -72,7 +72,6 @@ public partial class PageDownloadCompDetail : IPageView
     // 整合包安装
     public async void Install_Click(MyListItem sender, EventArgs e)
     {
-        if (!RestrictedFeaturePolicy.Check("online-modpack-install")) return;
         FrameworkElement? control = sender;
         control?.IsEnabled = false;
         try
