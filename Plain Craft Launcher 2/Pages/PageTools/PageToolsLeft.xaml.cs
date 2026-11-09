@@ -35,7 +35,7 @@ public partial class PageToolsLeft : IPageView
 
     private void RefreshNavigation()
     {
-        var isHiddenPage = _vm.IsHiddenPage(ItemGameLink.Checked, ItemTest.Checked, PageSetupUI.HiddenForceShow);
+        var isHiddenPage = _vm.IsHiddenPage(ItemGameLink.Checked, ItemLog.Checked, ItemTest.Checked, PageSetupUI.HiddenForceShow);
 
         // 若页面错误，或尚未加载，则继续
         if (isLoad && !isHiddenPage)
@@ -48,11 +48,14 @@ public partial class PageToolsLeft : IPageView
             return;
         switch (_vm.ResolveInitialPageId())
         {
+            case FormMain.PageSubType.ToolsGameLink:
+                ItemGameLink.SetChecked(true, false, false);
+                break;
             case FormMain.PageSubType.ToolsTest:
                 ItemTest.SetChecked(true, false, false);
                 break;
             default:
-                ItemGameLink.SetChecked(true, false, false);
+                ItemLog.SetChecked(true, false, false);
                 break;
         }
     }
@@ -86,7 +89,7 @@ public partial class PageToolsLeft : IPageView
     /// <summary>
     ///     当前页面的编号。
     /// </summary>
-    public FormMain.PageSubType pageID = FormMain.PageSubType.ToolsGameLink;
+    public FormMain.PageSubType pageID = FormMain.PageSubType.ToolsLog;
 
     /// <summary>
     ///     勾选事件改变页面。
@@ -110,6 +113,12 @@ public partial class PageToolsLeft : IPageView
                 if (Launcher.frmToolsGameLink is null)
                     Launcher.frmToolsGameLink = new PageToolsGameLink();
                 return Launcher.frmToolsGameLink;
+            }
+            case FormMain.PageSubType.ToolsLog:
+            {
+                if (Launcher.frmToolsLog is null)
+                    Launcher.frmToolsLog = new PageToolsLog();
+                return Launcher.frmToolsLog;
             }
             case FormMain.PageSubType.ToolsTest:
             {

@@ -1,0 +1,53 @@
+﻿<local:MyPageRight x:Class="PCL.PageToolsLog"
+                   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                   xmlns:local="clr-namespace:PCL"
+                   mc:Ignorable="d"
+                   xmlns:loc="https://ce.pclc.cc/core/localization">
+    <Grid>
+        <local:MyCard x:Name="PanLogCard" Margin="16,16,16,16">
+            <DockPanel Margin="12,40,12,12">
+                <Grid DockPanel.Dock="Top" Margin="4,0,4,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <local:MyComboBox x:Name="ComboLogFile" Grid.Column="0" Height="28"
+                                      VerticalAlignment="Center" HorizontalAlignment="Stretch"
+                                      ToolTip="{Binding FileCardTitle}"
+                                      SelectionChanged="ComboLogFile_SelectionChanged" />
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="10,0,0,0"
+                                VerticalAlignment="Center">
+                        <local:MyButton x:Name="BtnBrowse" MinWidth="110" Margin="0,0,10,0"
+                                        Text="{loc:Loc Tools.Log.Browse}" Click="BtnBrowse_Click" />
+                        <local:MyButton x:Name="BtnRefresh" MinWidth="90" Margin="0,0,10,0"
+                                        Text="{loc:Loc Common.Action.Refresh}" Click="BtnRefresh_Click" />
+                        <local:MyButton x:Name="BtnOpenFolder" MinWidth="110" Margin="0,0,10,0"
+                                        Text="{loc:Loc Common.Action.OpenFolder}" Click="BtnOpenFolder_Click" />
+                        <local:MyCheckBox x:Name="CheckAutoScroll" VerticalAlignment="Center" Checked="True"
+                                          Text="{loc:Loc LogPage.Action.Scroll}" />
+                    </StackPanel>
+                </Grid>
+                <Grid>
+                    <local:MyScrollViewer x:Name="PanBack" VerticalScrollBarVisibility="Auto"
+                                          HorizontalScrollBarVisibility="Disabled">
+                        <RichTextBox x:Name="PanLog" FontSize="13" FontFamily="Consolas"
+                                     HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                     BorderThickness="0" Background="Transparent" IsReadOnly="True"
+                                     VirtualizingPanel.IsVirtualizing="True"
+                                     VirtualizingPanel.VirtualizationMode="Recycling"
+                                     VirtualizingPanel.IsContainerVirtualizable="True"
+                                     VirtualizingPanel.IsVirtualizingWhenGrouping="True"
+                                     VirtualizingPanel.ScrollUnit="Pixel" />
+                    </local:MyScrollViewer>
+                    <TextBlock x:Name="LabEmpty" Visibility="Collapsed" HorizontalAlignment="Center"
+                               VerticalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center"
+                               MaxWidth="420" Opacity="0.6" IsHitTestVisible="False"
+                               Text="{loc:Loc Tools.Log.Empty.Description}" />
+                </Grid>
+            </DockPanel>
+        </local:MyCard>
+    </Grid>
+</local:MyPageRight>

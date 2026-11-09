@@ -3185,6 +3185,7 @@
     <sys:String x:Key="Setup.Ui.FeatureHide.Item.Settings">设置</sys:String>
     <sys:String x:Key="Setup.Ui.FeatureHide.Item.Shader">光影包</sys:String>
     <sys:String x:Key="Setup.Ui.FeatureHide.Item.Toolbox">百宝箱</sys:String>
+    <sys:String x:Key="Setup.Ui.FeatureHide.Item.ToolsLog">游戏日志</sys:String>
     <sys:String x:Key="Setup.Ui.FeatureHide.Item.Tools">工具</sys:String>
     <sys:String x:Key="Setup.Ui.FeatureHide.Item.Ui">个性化</sys:String>
     <sys:String x:Key="Setup.Ui.FeatureHide.Item.Update">软件更新</sys:String>
@@ -3376,6 +3377,16 @@
     <sys:String x:Key="Tools.Left.Multiplayer">联机</sys:String>
     <sys:String x:Key="Tools.Left.Utilities">奇妙小工具</sys:String>
     <sys:String x:Key="Tools.Left.Utilities.Title">百宝箱</sys:String>
+    <sys:String x:Key="Tools.Left.Log">游戏日志</sys:String>
+    <sys:String x:Key="Tools.Log.Browse">浏览文件</sys:String>
+    <sys:String x:Key="Tools.Log.Browse.Filter">日志文件(*.log;*.txt)|*.log;*.txt|所有文件(*.*)|*.*</sys:String>
+    <sys:String x:Key="Tools.Log.Browse.Title">选择要查看的日志文件</sys:String>
+    <sys:String x:Key="Tools.Log.Empty.Description">暂无可显示的日志。启动一次游戏，或点击「浏览文件」手动选择日志文件。</sys:String>
+    <sys:String x:Key="Tools.Log.Error.Load">加载日志文件失败。请查看错误详情。</sys:String>
+    <sys:String x:Key="Tools.Log.File.Title">日志文件</sys:String>
+    <sys:String x:Key="Tools.Log.Source.Crash">崩溃报告 - {0}</sys:String>
+    <sys:String x:Key="Tools.Log.Source.Running">正在运行 - {0}</sys:String>
+    <sys:String x:Key="Tools.Log.Title">游戏日志</sys:String>
 
     <!-- Tools.GameLink -->
 

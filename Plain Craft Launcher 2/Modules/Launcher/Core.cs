@@ -20,6 +20,7 @@ public static partial class Launcher
     public static PageSpeedRight? frmSpeedRight;
     public static PageToolsLeft? frmToolsLeft;
     public static PageToolsGameLink? frmToolsGameLink;
+    public static PageToolsLog? frmToolsLog;
     public static PageToolsTest? frmToolsTest;
     public static PageDownloadLeft? frmDownloadLeft;
     public static PageDownloadInstall? frmDownloadInstall;

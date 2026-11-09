@@ -47,6 +47,14 @@
                           Title="{loc:Loc Tools.Left.Utilities.Title}" Check="PageCheck"
                           LogoScale="0.9"
                           SvgIcon="lucide/tool-case" />
+        <local:MyListItem x:Name="ItemLog"
+                          IsScaleAnimationEnabled="False"
+                          Type="RadioBox" Tag="2"
+                          MinPaddingRight="35" Height="36"
+                          VerticalAlignment="Top"
+                          Title="{loc:Loc Tools.Left.Log}" Check="PageCheck"
+                          LogoScale="0.9"
+                          SvgIcon="lucide/scroll-text" />
 
     </StackPanel>
 </local:MyPageLeft>

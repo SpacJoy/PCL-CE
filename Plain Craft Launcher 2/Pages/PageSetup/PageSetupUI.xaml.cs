@@ -161,6 +161,7 @@ public partial class PageSetupUI : IPageView
             // 子页面 工具
             CheckHiddenToolsGameLink.Checked = uiHidden.ToolsGameLink;
             CheckHiddenToolsTest.Checked = uiHidden.ToolsTest;
+            CheckHiddenToolsLog.Checked = uiHidden.ToolsLog;
 
             // 子页面 实例设置
             CheckHiddenVersionEdit.Checked = uiHidden.InstanceEdit;
@@ -868,13 +869,15 @@ public partial class PageSetupUI : IPageView
                     : Visibility.Visible;
                 Launcher.frmToolsLeft.ItemTest.Visibility =
                     !HiddenForceShow && conf.ToolsTest ? Visibility.Collapsed : Visibility.Visible;
+                Launcher.frmToolsLeft.ItemLog.Visibility =
+                    !HiddenForceShow && conf.ToolsLog ? Visibility.Collapsed : Visibility.Visible;
 
                 // 处理分类标题
                 var isGameLinkVisible = (!HiddenForceShow && !conf.ToolsGameLink) || HiddenForceShow;
                 Launcher.frmToolsLeft.TextGameLinkCategory.Visibility = isGameLinkVisible ? Visibility.Visible : Visibility.Collapsed;
                 if (isGameLinkVisible) Launcher.frmToolsLeft.TextGameLinkCategory.Opacity = 0.6;
 
-                var isToolsVisible = (!HiddenForceShow && !conf.ToolsTest) || HiddenForceShow;
+                var isToolsVisible = (!HiddenForceShow && (!conf.ToolsTest || !conf.ToolsLog)) || HiddenForceShow;
                 Launcher.frmToolsLeft.TextToolsCategory.Visibility = isToolsVisible ? Visibility.Visible : Visibility.Collapsed;
                 if (isToolsVisible) Launcher.frmToolsLeft.TextToolsCategory.Opacity = 0.6;
 
@@ -884,8 +887,10 @@ public partial class PageSetupUI : IPageView
                     toolsCount += 1;
                 if (!conf.ToolsTest)
                     toolsCount += 1;
+                if (!conf.ToolsLog)
+                    toolsCount += 1;
                 Launcher.frmToolsLeft.PanItem.Visibility =
-                    toolsCount < 2 && !HiddenForceShow ? Visibility.Collapsed : Visibility.Visible;
+                    toolsCount < 3 && !HiddenForceShow ? Visibility.Collapsed : Visibility.Visible;
             }
 
             // 其他入口刷新
@@ -964,6 +969,7 @@ public partial class PageSetupUI : IPageView
         var isChecked = (bool)CheckHiddenPageTools.Checked;
         CheckHiddenToolsGameLink.Checked = isChecked;
         CheckHiddenToolsTest.Checked = isChecked;
+        CheckHiddenToolsLog.Checked = isChecked;
     }
 
     private void HiddenToolsSub(object sender, bool user)
@@ -971,7 +977,7 @@ public partial class PageSetupUI : IPageView
         if (!user)
             return;
         var conf = Config.Preference.Hide;
-        var allChecked = conf.ToolsGameLink && conf.ToolsTest;
+        var allChecked = conf.ToolsGameLink && conf.ToolsTest && conf.ToolsLog;
         CheckHiddenPageTools.Checked = allChecked;
     }
 

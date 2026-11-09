@@ -3185,6 +3185,7 @@
     <sys:String x:Key="Setup.Ui.FeatureHide.Item.Settings">Settings</sys:String>
     <sys:String x:Key="Setup.Ui.FeatureHide.Item.Shader">Shaders</sys:String>
     <sys:String x:Key="Setup.Ui.FeatureHide.Item.Toolbox">Toolbox</sys:String>
+    <sys:String x:Key="Setup.Ui.FeatureHide.Item.ToolsLog">Game Logs</sys:String>
     <sys:String x:Key="Setup.Ui.FeatureHide.Item.Tools">Tools</sys:String>
     <sys:String x:Key="Setup.Ui.FeatureHide.Item.Ui">Personalization</sys:String>
     <sys:String x:Key="Setup.Ui.FeatureHide.Item.Update">Update</sys:String>
@@ -3376,6 +3377,16 @@
     <sys:String x:Key="Tools.Left.Multiplayer">Multiplayer</sys:String>
     <sys:String x:Key="Tools.Left.Utilities">Utilities</sys:String>
     <sys:String x:Key="Tools.Left.Utilities.Title">Toolbox</sys:String>
+    <sys:String x:Key="Tools.Left.Log">Game Logs</sys:String>
+    <sys:String x:Key="Tools.Log.Browse">Browse</sys:String>
+    <sys:String x:Key="Tools.Log.Browse.Filter">Log files (*.log;*.txt)|*.log;*.txt|All files (*.*)|*.*</sys:String>
+    <sys:String x:Key="Tools.Log.Browse.Title">Select a log file to view</sys:String>
+    <sys:String x:Key="Tools.Log.Empty.Description">No logs to display. Start the game once, or click "Browse" to pick a log file manually.</sys:String>
+    <sys:String x:Key="Tools.Log.Error.Load">Failed to load the log file. Check the error details.</sys:String>
+    <sys:String x:Key="Tools.Log.File.Title">Log File</sys:String>
+    <sys:String x:Key="Tools.Log.Source.Crash">Crash Report - {0}</sys:String>
+    <sys:String x:Key="Tools.Log.Source.Running">Running - {0}</sys:String>
+    <sys:String x:Key="Tools.Log.Title">Game Logs</sys:String>
 
     <!-- Tools.GameLink -->
 
