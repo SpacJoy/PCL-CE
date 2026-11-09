@@ -346,3 +346,7 @@ MaskFiles/
 # macOS
 
 **/.DS_Store
+
+# 本分支本地构建产物（docs/BUILD.md）
+/artifact/
+/publish/

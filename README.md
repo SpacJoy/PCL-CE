@@ -6,31 +6,64 @@
 
 # PCL Community Edition
 
-[![Stars](https://img.shields.io/github/stars/PCL-Community/PCL-CE?style=for-the-badge&logo=data:image/svg%2bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEiIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiI+PHBhdGggZD0iTTggLjI1YS43NS43NSAwIDAgMSAuNjczLjQxOGwxLjg4MiAzLjgxNSA0LjIxLjYxMmEuNzUuNzUgMCAwIDEgLjQxNiAxLjI3OWwtMy4wNDYgMi45Ny43MTkgNC4xOTJhLjc1MS43NTEgMCAwIDEtMS4wODguNzkxTDggMTIuMzQ3bC0zLjc2NiAxLjk4YS43NS43NSAwIDAgMS0xLjA4OC0uNzlsLjcyLTQuMTk0TC44MTggNi4zNzRhLjc1Ljc1IDAgMCAxIC40MTYtMS4yOGw0LjIxLS42MTFMNy4zMjcuNjY4QS43NS43NSAwIDAgMSA4IC4yNVoiIGZpbGw9IiNlYWM1NGYiLz48L3N2Zz4=&logoSize=auto&label=stars&labelColor=444444&color=eac54f)](https://github.com/PCL-Community/PCL-CE/)
-![GitHub Release](https://img.shields.io/github/v/release/PCL-Community/PCL-CE?label=release&logo=github&style=for-the-badge)
-![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/PCL-Community/PCL-CE/build-test.yml?style=for-the-badge)
+**SpacJoy 的个人分支** · 基于 [PCL-Community/PCL-CE](https://github.com/PCL-Community/PCL-CE)
 
-[![Issues](https://img.shields.io/github/issues/PCL-Community/PCL-CE?style=for-the-badge&label=issues&labelColor=444444&color=1F883D&logo=github)](https://github.com/PCL-Community/PCL-CE/issues)
-[![Pull requests](https://img.shields.io/github/issues-pr/PCL-Community/PCL-CE?style=for-the-badge&label=pull%20requests&labelColor=444444&color=1F883D&logo=github)](https://github.com/PCL-Community/PCL-CE/pulls)
-![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/PCL-Community/PCL-CE/total?style=for-the-badge)
-[![哔哩哔哩](https://img.shields.io/badge/动态-bilibili-00A4DB?style=for-the-badge&labelColor=444444&logo=bilibili)](https://space.bilibili.com/3546847192811755/dynamic) <br />
-
-<a href="https://trendshift.io/repositories/21800?utm_source=trendshift-badge&amp;utm_medium=badge&amp;utm_campaign=badge-trendshift-21800" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/trendshift/repositories/21800/weekly?language=C%23" alt="PCL-Community%2FPCL-CE | Trendshift" width="250" height="55"/></a>
-<a href="https://trendshift.io/repositories/21800" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/repositories/21800" alt="PCL-Community%2FPCL-CE | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
-
-[社区版下载](https://github.com/PCL-Community/PCL-CE/releases/latest) |
-[上游存储库](https://github.com/Meloong-Git/PCL)
-
-[提交问题](https://github.com/PCL-Community/PCL-CE/issues/new/choose) |
-[贡献指南](https://github.com/PCL-Community/PCL-CE/wiki/开发指南)
+[上游仓库](https://github.com/PCL-Community/PCL-CE) |
+[PCL 原始仓库](https://github.com/Meloong-Git/PCL) |
+[开发文档](https://docs.pclc.cc/ce/developers/setup)
 
 </div>
 
-PCL CE 是基于 PCL 开源代码二次开发的社区版本，包括了主线暂未制作的功能和改进！
+> [!IMPORTANT]
+> 本仓库是 **PCL CE 的个人分支（fork）**，不是官方发行版。
+>
+> - 不提供发行包、自动更新与技术支持，请自行[构建](#-构建)。
+> - 本分支引入的问题请**不要**提交到 [PCL-Community/PCL-CE](https://github.com/PCL-Community/PCL-CE)，那边的反馈渠道只对应官方版本。
+> - 由个人按需维护，不保证处理外部 Issue / PR，合并节奏跟随上游 `dev` 分支。
 
-社区版的版本号与主线并非严格对应关系，也请不要向官方仓库反馈社区版问题。
+## 📌 本分支相对上游的改动
 
-欢迎大家来用用看！
+基于上游 `v2.15.1`（`upstream/dev`）之后的提交：
+
+| 提交 | 类型 | 说明 |
+|---|---|---|
+| `2845318` | feat | 移除中国大陆地区功能限制（下载、补全、加载器安装、实例修复/重置、整合包安装等不再按区域禁用） |
+| `8ae19b9` | fix | 修复禁用/删除模组时误报「文件被占用」：容忍 `fabric.mod.json` 中的裸换行，内嵌（JiJ）解析失败不再永久阻塞实例 |
+| `096dacb` | fix | 写 `options.txt` 等 ini 与启动脚本时不再输出 UTF-8 BOM，修复每次经启动器启动游戏设置被重置 |
+| `adb5f28` | fix | 修复输入弹窗无法取消、重命名时确定按钮被重名校验拦下导致死锁 |
+| `eca1dcc` | fix | 无新日志时也检查游戏进程是否退出，修复关闭游戏后按钮不消失、崩溃分析不触发 |
+| `b8c8012` | fix | 修复查看前置资源时详情页内容不刷新（单例页面在 `OnNavigatedFrom` 复位刷新标记） |
+| `663452d` | feat | 工具页新增「游戏日志」子页面：增量读取 `logs/latest.log`、分级着色、自动探测编码、浏览历史日志与崩溃报告 |
+
+完整差异：`git log --oneline upstream/dev..HEAD` / `git diff upstream/dev..HEAD`。
+
+## 🛠️ 构建
+
+本分支的构建方式与上游一致，额外注意密钥注入与增量生成器两个坑，详见 [docs/BUILD.md](docs/BUILD.md)。
+
+最短路径（Windows，.NET 10 SDK）：
+
+```bash
+export PCL_WRITE_SECRET=1
+export PCL_MS_CLIENT_ID=<你的 Microsoft OAuth Client ID>
+dotnet publish "Plain Craft Launcher 2/Plain Craft Launcher 2.csproj" \
+  -p:Configuration=Release -p:Platform=x64 \
+  -p:DeleteExistingFiles=true -o ./artifact --no-self-contained -t:Rebuild
+```
+
+产物为 `artifact/Plain Craft Launcher 2.exe`。缺少 `PCL_MS_CLIENT_ID` 时启动器仍可运行，但微软账号登录会报 *Microsoft OAuth client id is not configured*。
+
+## 🔄 与上游同步
+
+```bash
+git remote add upstream https://github.com/PCL-Community/PCL-CE.git  # 仅首次
+git fetch upstream
+git merge upstream/dev        # 或 git rebase upstream/dev
+```
+
+## 关于 PCL CE
+
+PCL CE 是基于 PCL 开源代码二次开发的社区版本，包括了主线暂未制作的功能和改进。社区版的版本号与主线并非严格对应关系，也请不要向官方仓库反馈社区版问题。
 
 **开发群:** [599620549](https://qm.qq.com/q/PNQA4Md8wc)[✦](https://t.me/+78XW2bUOvKJjMTZl) | **用户 1 群:** [1028074835](https://qm.qq.com/q/qrMGJo8BQQ) | **用户 2 群:** [1070029541](https://qm.qq.com/q/lBywbDMWhG)
 
@@ -51,23 +84,20 @@ PCL CE 是基于 PCL 开源代码二次开发的社区版本，包括了主线�
 
 **⚠️ 仅跨平台开发支持（交叉编译）**：PCL CE 的源代码可以在 macOS 与 Linux 平台编译，但无法直接运行。作为开发者，你可以在这些平台上进行开发，然后将编译产物转移到 Windows 系统测试。
 
-**注**：    
-社区仅对最新版本的启动器提供支持。    
-取决于部分问题的特殊性（如系统不完整），有时你仍然必须升级操作系统以继续获得支持。    
-PCL CE 始终建议使用最新版本的操作系统以获得最佳体验。    
+**注**：
+社区仅对最新版本的启动器提供支持。
+取决于部分问题的特殊性（如系统不完整），有时你仍然必须升级操作系统以继续获得支持。
+PCL CE 始终建议使用最新版本的操作系统以获得最佳体验。
 你仍然可以尝试在不受支持的系统上使用 PCL CE，但可能会遇到很多额外问题。
 
 ## 🔒 许可证
 
-- `Plain Craft Launcher 2/` 使用 [自定义许可证](https://github.com/PCL-Community/PCL-CE/blob/dev/Plain%20Craft%20Launcher%202/LICENCE)
-- `其余所有目录` 使用 [Apache License 2.0](https://github.com/PCL-Community/PCL-CE/blob/dev/LICENSE)
+- `Plain Craft Launcher 2/` 使用 [自定义许可证](Plain Craft Launcher 2/LICENCE)（《PCL 分发有限许可》与《PCL 存储库合理使用指南》）
+- `其余所有目录` 使用 [Apache License 2.0](LICENSE)
 
-## 🌟 统计数据
-![Alt](https://repobeats.axiom.co/api/embed/3e46296e6e3a134991a783480fd2f62723bb0353.svg "Repobeats analytics image")
+本分支属于上述指南中的「重度使用」：由第三方基于 PCL 独立二次创作，与 PCL 官方及 PCL CE 官方均无隶属关系。
 
-[![Star History Chart](https://api.star-history.com/chart?repos=PCL-Community/PCL-CE&type=date&legend=top-left&sealed_token=Ts-GaAXJ5nb9fJERusrXneo05pfZ83tMhReHJ98nmmlemBTqHS5Ozocdep1MTMdsX-6CRiQH9TqiS1Kk7SxjTfk02eUOxnm25oHff6TLLvrY7pGujOkU1IwjVFQLE-5GJYogutJAyI78jujBlOnpk3J2OKAY1PBhmkyUOzW1C1sdz5BzPbj2eBbJGvDx)](https://www.star-history.com/?repos=PCL-Community%2FPCL-CE&type=date&legend=top-left)
+## 🙏 致谢
 
-**此页浏览量**（总计 / 今日）：[![Hits](https://hits.zkitefly.eu.org/?tag=https://github.com/PCL-Community/PCL-CE)](https://hits.zkitefly.eu.org/?tag=https://github.com/PCL-Community/PCL-CE&web=true)
-## ❤️ 贡献者
-
-[![](https://contrib.rocks/image?repo=PCL-Community/PCL-CE)](https://github.com/PCL-Community/PCL-CE/graphs/contributors)
+- [Meloong-Git/PCL](https://github.com/Meloong-Git/PCL) 与 PCL 全体贡献者
+- [PCL-Community/PCL-CE](https://github.com/PCL-Community/PCL-CE) 与社区版贡献者

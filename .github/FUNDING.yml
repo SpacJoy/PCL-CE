@@ -1,3 +1,6 @@
 # These are supported funding model platforms
-
-custom: ['https://afdian.com/a/LTCat']
+#
+# 本仓库是 PCL CE 的个人分支，不设置赞助入口。
+# 若想支持 PCL / PCL CE 的作者，请前往上游仓库：
+#   PCL:     https://github.com/Meloong-Git/PCL
+#   PCL CE:  https://github.com/PCL-Community/PCL-CE

@@ -6,33 +6,66 @@
 
 # PCL Community Edition
 
-[![Stars](https://img.shields.io/github/stars/PCL-Community/PCL-CE?style=for-the-badge&logo=data:image/svg%2bxml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEiIHdpZHRoPSIxNiIgaGVpZ2h0PSIxNiI+PHBhdGggZD0iTTggLjI1YS43NS43NSAwIDAgMSAuNjczLjQxOGwxLjg4MiAzLjgxNSA0LjIxLjYxMmEuNzUuNzUgMCAwIDEgLjQxNiAxLjI3OWwtMy4wNDYgMi45Ny43MTkgNC4xOTJhLjc1MS43NTEgMCAwIDEtMS4wODguNzkxTDggMTIuMzQ3bC0zLjc2NiAxLjk4YS43NS43NSAwIDAgMS0xLjA4OC0uNzlsLjcyLTQuMTk0TC44MTggNi4zNzRhLjc1Ljc1IDAgMCAxIC40MTYtMS4yOGw0LjIxLS42MTFMNy4zMjcuNjY4QS43NS43NSAwIDAgMSA4IC4yNVoiIGZpbGw9IiNlYWM1NGYiLz48L3N2Zz4=&logoSize=auto&label=stars&labelColor=444444&color=eac54f)](https://github.com/PCL-Community/PCL-CE/)
-![GitHub Release](https://img.shields.io/github/v/release/PCL-Community/PCL-CE?label=release&logo=github&style=for-the-badge)
-![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/PCL-Community/PCL-CE/build-test.yml?style=for-the-badge)
+**SpacJoy 的個人分支** · 基於 [PCL-Community/PCL-CE](https://github.com/PCL-Community/PCL-CE)
 
-[![Issues](https://img.shields.io/github/issues/PCL-Community/PCL-CE?style=for-the-badge&label=issues&labelColor=444444&color=1F883D&logo=github)](https://github.com/PCL-Community/PCL-CE/issues)
-[![Pull requests](https://img.shields.io/github/issues-pr/PCL-Community/PCL-CE?style=for-the-badge&label=pull%20requests&labelColor=444444&color=1F883D&logo=github)](https://github.com/PCL-Community/PCL-CE/pulls)
-![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/PCL-Community/PCL-CE/total?style=for-the-badge)
-[![嗶哩嗶哩](https://img.shields.io/badge/貼文-bilibili-00A4DB?style=for-the-badge&labelColor=444444&logo=bilibili)](https://space.bilibili.com/3546847192811755/dynamic) <br />
-
-<a href="https://trendshift.io/repositories/21800?utm_source=trendshift-badge&amp;utm_medium=badge&amp;utm_campaign=badge-trendshift-21800" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/trendshift/repositories/21800/daily?language=C%23" alt="PCL-Community%2FPCL-CE | Trendshift" width="250" height="55"/></a>
-<a href="https://trendshift.io/repositories/21800" target="_blank"><img src="https://trendshift.io/api/badge/repositories/21800" alt="PCL-Community%2FPCL-CE | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
-
-[社群版下載](https://github.com/PCL-Community/PCL-CE/releases/latest) |
-[上游儲存庫](https://github.com/Meloong-Git/PCL)
-
-[提交問題](https://github.com/PCL-Community/PCL-CE/issues/new/choose) |
-[貢獻指南](https://github.com/PCL-Community/PCL-CE/wiki/开发指南)
+[上游儲存庫](https://github.com/PCL-Community/PCL-CE) |
+[PCL 原始儲存庫](https://github.com/Meloong-Git/PCL) |
+[開發文件](https://docs.pclc.cc/ce/developers/setup)
 
 </div>
 
-PCL CE 是基於 PCL 開放原始碼二次開發的社群版本，包括了主線暫未製作的功能和改進！
+> [!IMPORTANT]
+> 本儲存庫是 **PCL CE 的個人分支（fork）**，並非官方發行版。
+>
+> - 不提供發行包、自動更新與技術支援，請自行[建置](#-建置)。
+> - 本分支引入的問題請**不要**回報到 [PCL-Community/PCL-CE](https://github.com/PCL-Community/PCL-CE)，該處的回饋管道僅對應官方版本。
+> - 由個人按需維護，不保證處理外部 Issue / PR，合併節奏跟隨上游 `dev` 分支。
 
-社群版的版本號與主線並非嚴格對應關係，也請不要向官方儲存庫回饋社群版問題。
+## 📌 本分支相對上游的改動
 
-歡迎大家來用用看！
+基於上游 `v2.15.1`（`upstream/dev`）之後的提交：
 
-**開發群:** [599620549](https://qm.qq.com/q/PNQA4Md8wc) | **使用者 1 群:** [1028074835](https://qm.qq.com/q/qrMGJo8BQQ) | **使用者 2 群:** [1070029541](https://qm.qq.com/q/lBywbDMWhG)
+| 提交 | 類型 | 說明 |
+|---|---|---|
+| `2845318` | feat | 移除中國大陸地區功能限制（下載、補全、載入器安裝、實例修復/重設、整合包安裝等不再依區域停用） |
+| `8ae19b9` | fix | 修正停用/刪除模組時誤報「檔案被佔用」：容許 `fabric.mod.json` 中的裸換行，內嵌（JiJ）解析失敗不再永久阻塞實例 |
+| `096dacb` | fix | 寫入 `options.txt` 等 ini 與啟動腳本時不再輸出 UTF-8 BOM，修正每次經啟動器啟動遊戲設定被重設 |
+| `adb5f28` | fix | 修正輸入彈窗無法取消、重新命名時確定按鈕被重名校驗攔下導致的死鎖 |
+| `eca1dcc` | fix | 無新日誌時也檢查遊戲行程是否結束，修正關閉遊戲後按鈕不消失、崩潰分析不觸發 |
+| `b8c8012` | fix | 修正檢視前置資源時詳情頁內容不重新整理（單例頁面於 `OnNavigatedFrom` 重設重新整理標記） |
+| `663452d` | feat | 工具頁新增「遊戲日誌」子頁面：增量讀取 `logs/latest.log`、分級著色、自動偵測編碼、瀏覽歷史日誌與崩潰報告 |
+
+完整差異：`git log --oneline upstream/dev..HEAD` / `git diff upstream/dev..HEAD`。
+
+## 🛠️ 建置
+
+建置方式與上游一致，額外注意密鑰注入與增量產生器兩個坑，詳見 [docs/BUILD.md](docs/BUILD.md)。
+
+最短路徑（Windows，.NET 10 SDK）：
+
+```bash
+export PCL_WRITE_SECRET=1
+export PCL_MS_CLIENT_ID=<你的 Microsoft OAuth Client ID>
+dotnet publish "Plain Craft Launcher 2/Plain Craft Launcher 2.csproj" \
+  -p:Configuration=Release -p:Platform=x64 \
+  -p:DeleteExistingFiles=true -o ./artifact --no-self-contained -t:Rebuild
+```
+
+產物為 `artifact/Plain Craft Launcher 2.exe`。缺少 `PCL_MS_CLIENT_ID` 時啟動器仍可執行，但微軟帳號登入會報 *Microsoft OAuth client id is not configured*。
+
+## 🔄 與上游同步
+
+```bash
+git remote add upstream https://github.com/PCL-Community/PCL-CE.git  # 僅首次
+git fetch upstream
+git merge upstream/dev        # 或 git rebase upstream/dev
+```
+
+## 關於 PCL CE
+
+PCL CE 是基於 PCL 開放原始碼二次開發的社群版本，包括了主線暫未製作的功能和改進。社群版的版本號與主線並非嚴格對應關係，也請不要向官方儲存庫回饋社群版問題。
+
+**開發群:** [599620549](https://qm.qq.com/q/PNQA4Md8wc)[✦](https://t.me/+78XW2bUOvKJjMTZl) | **使用者 1 群:** [1028074835](https://qm.qq.com/q/qrMGJo8BQQ) | **使用者 2 群:** [1070029541](https://qm.qq.com/q/lBywbDMWhG)
 
 ## 💻 支援平台
 
@@ -59,15 +92,12 @@ PCL CE 始終建議使用最新版本的作業系統以獲得最佳體驗。
 
 ## 🔒 授權條款
 
-- `Plain Craft Launcher 2/` 使用 [自訂授權條款](https://github.com/PCL-Community/PCL-CE/blob/dev/Plain%20Craft%20Launcher%202/LICENCE)
-- `其餘所有目錄` 使用 [Apache License 2.0](https://github.com/PCL-Community/PCL-CE/blob/dev/LICENSE)
+- `Plain Craft Launcher 2/` 使用 [自訂授權條款](Plain Craft Launcher 2/LICENCE)（《PCL 分發有限許可》與《PCL 儲存庫合理使用指南》）
+- `其餘所有目錄` 使用 [Apache License 2.0](LICENSE)
 
-## 🌟 統計資料
-![Alt](https://repobeats.axiom.co/api/embed/3e46296e6e3a134991a783480fd2f62723bb0353.svg "Repobeats analytics image")
+本分支屬於上述指南中的「重度使用」：由第三方基於 PCL 獨立二次創作，與 PCL 官方及 PCL CE 官方均無隸屬關係。
 
-[![Star History Chart](https://api.star-history.com/svg?repos=PCL-Community/PCL-CE&type=Date)](https://www.star-history.com/#PCL-Community/PCL-CE&Date)
+## 🙏 致謝
 
-**此頁瀏覽量**（總計 / 今日）：[![Hits](https://hits.zkitefly.eu.org/?tag=https://github.com/PCL-Community/PCL-CE)](https://hits.zkitefly.eu.org/?tag=https://github.com/PCL-Community/PCL-CE&web=true)
-## ❤️ 貢獻者
-
-[![](https://contrib.rocks/image?repo=PCL-Community/PCL-CE)](https://github.com/PCL-Community/PCL-CE/graphs/contributors)
+- [Meloong-Git/PCL](https://github.com/Meloong-Git/PCL) 與 PCL 全體貢獻者
+- [PCL-Community/PCL-CE](https://github.com/PCL-Community/PCL-CE) 與社群版貢獻者
