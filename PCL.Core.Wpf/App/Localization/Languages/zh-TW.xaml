@@ -273,6 +273,7 @@
 
     <!-- Download.Comp -->
 
+    <sys:String x:Key="Download.Comp.Error.CurseForgeUnavailable">CurseForge 源目前無法使用（API Key 無效或權限不足），請改用 Modrinth 源重試。</sys:String>
     <sys:String x:Key="Download.Comp.Error.OperationFailed">資源下載操作失敗。請檢視錯誤詳情。</sys:String>
     <sys:String x:Key="Download.Comp.Hint.ModrinthUnreachable">無法連線到 Modrinth，所以目前僅顯示了來自 CurseForge 的內容，搜尋結果可能不全。&#xA;請稍後再試，或使用 VPN 以改善網路環境。</sys:String>
     <sys:String x:Key="Download.Comp.Link.ResolveFailed">未能識別或取得該資源連結</sys:String>
@@ -2562,6 +2563,8 @@
     <sys:String x:Key="Setup.Feedback.Submit.Title">提交回饋</sys:String>
     <sys:String x:Key="Setup.Feedback.Unavailable.CheckFailed.Action">重新檢查更新</sys:String>
     <sys:String x:Key="Setup.Feedback.Unavailable.CheckFailed.Message">檢查更新失敗，因此無法提交回饋。&#xA;請連線網際網路，檢查更新後確認該問題在最新版中依然存在，再提交回饋。</sys:String>
+    <sys:String x:Key="Setup.Feedback.Unavailable.NoRelease.Action">檢視軟體資訊頁</sys:String>
+    <sys:String x:Key="Setup.Feedback.Unavailable.NoRelease.Message">倉庫尚未發布任何版本，無法確認目前版本是否為最新版，因此暫時無法提交回饋。</sys:String>
     <sys:String x:Key="Setup.Feedback.Unavailable.NotLatest.Action">更新</sys:String>
     <sys:String x:Key="Setup.Feedback.Unavailable.NotLatest.Message">目前 PCL CE 不是最新版，因此無法提交回饋。&#xA;請更新後確認該問題在最新版中依然存在，再提交回饋。</sys:String>
     <sys:String x:Key="Setup.Feedback.Unavailable.Title">無法提交回饋</sys:String>
@@ -3184,6 +3187,7 @@
     <sys:String x:Key="Setup.Update.Changelog.Unavailable">沒有可用的更新紀錄...</sys:String>
     <sys:String x:Key="Setup.Update.Changelog.View">檢視更新紀錄</sys:String>
     <sys:String x:Key="Setup.Update.CheckAgain">再次檢查</sys:String>
+    <sys:String x:Key="Setup.Update.NoRelease">暫無可用版本</sys:String>
     <sys:String x:Key="Setup.Update.CheckFailed">檢查更新時出錯</sys:String>
     <sys:String x:Key="Setup.Update.Checking">正在檢查更新...</sys:String>
     <sys:String x:Key="Setup.Update.DotNetMissing.DownloadRuntime">下載 .NET 10 執行時</sys:String>
@@ -3192,9 +3196,6 @@
     <sys:String x:Key="Setup.Update.Error.NetworkFailed">無法取得最新版本資訊，請檢查網路連線</sys:String>
     <sys:String x:Key="Setup.Update.Install">下載並安裝</sys:String>
     <sys:String x:Key="Setup.Update.Latest">已是最新版本</sys:String>
-    <sys:String x:Key="Setup.Update.MirrorChyanCdk.Get">取得 CDK</sys:String>
-    <sys:String x:Key="Setup.Update.MirrorChyanCdk.Label">Mirror 醬 CDK</sys:String>
-    <sys:String x:Key="Setup.Update.MirrorChyanCdk.ToolTip">Mirror 醬 (mirrorchyan.com) 是一個付費的第三方應用分發平台，用於提供有償高速下載源。&#xA;這是一項可選服務，不填入 CDK 不影響正常使用與更新。&#xA;如果你有 Mirror 醬的 CDK，可以提供給 PCL CE，啟動器會優先使用他們的高速下載源下載軟體更新，也能紓解社群公益更新伺服器的一些壓力……</sys:String>
     <sys:String x:Key="Setup.Update.OtherOptions.Placeholder">AquaCL 3 是 PCL CE 的第一個主要更新，帶來了讓人眼睛一亮的新設計，使用了最新開發技術，完全重構了基礎體驗，並更支援 macOS、Linux 等其他平台。</sys:String>
     <sys:String x:Key="Setup.Update.OtherOptions.Title">其他更新選項 - 升級到 AquaCL</sys:String>
     <sys:String x:Key="Setup.Update.RestartInstall">重啟安裝</sys:String>

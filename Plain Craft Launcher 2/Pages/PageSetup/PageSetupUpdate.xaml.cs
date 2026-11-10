@@ -47,7 +47,6 @@ public partial class PageSetupUpdate : IPageView
     private void Init()
     {
         Animations.AniBeginControl();
-        TextMirrorCDK.Password = Config.Update.MirrorChyanKey;
 
         ComboSystemUpdateChannel.SelectedIndex = (int)Config.Update.UpdateChannel;
         ComboSystemUpdateMode.SelectedIndex = (int)Config.Update.UpdateMode;
@@ -75,6 +74,12 @@ public partial class PageSetupUpdate : IPageView
 
             Common.Log("[Update] 有可用的新版本");
             return UpdateStatus.Available;
+        }
+        catch (NoReleaseAvailableException ex)
+        {
+            // 仓库尚未发布任何版本：这是正常状态，提示即可，不该报网络错误。
+            Common.Log($"[Update] {ex.Message}");
+            return UpdateStatus.NoRelease;
         }
         catch (Exception ex)
         {
@@ -169,6 +174,15 @@ public partial class PageSetupUpdate : IPageView
                 _vm.ShowCheckCard = true;
                 _vm.CheckAgainEnabled = true;
                 _vm.CurrentDescText = Lang.Text("Setup.Update.CheckFailed");
+                break;
+            }
+            case UpdateStatus.NoRelease:
+            {
+                // 仓库还没发版，不算故障：保留“再次检查”，让用户发版后能直接重试。
+                _vm.ShowUpdateCard = false;
+                _vm.ShowCheckCard = true;
+                _vm.CheckAgainEnabled = true;
+                _vm.CurrentDescText = Lang.Text("Setup.Update.NoRelease");
                 break;
             }
         }
@@ -323,19 +337,9 @@ public partial class PageSetupUpdate : IPageView
         }
     }
 
-    private void TextMirrorCDK_PasswordChanged(object sender, EventArgs e)
-    {
-        Config.Update.MirrorChyanKey = TextMirrorCDK.Password;
-    }
-
-    private void BtnGetMirrorCDK_Click(object sender, MouseButtonEventArgs e)
-    {
-        Common.OpenWebsite("https://mirrorchyan.com/");
-    }
-
     private void BtnChangelog_Click(object sender, MouseButtonEventArgs e)
     {
-        Common.OpenWebsite("https://github.com/PCL-Community/PCL2-CE/releases/v" + Common.VersionBaseName);
+        Common.OpenWebsite("https://github.com/SpacJoy/PCL-CE/releases");
     }
 
     public string VersionNameFormat(string str) => PageSetupUpdateViewModel.VersionNameFormat(str);
@@ -350,6 +354,9 @@ public partial class PageSetupUpdate : IPageView
         Checking = 0,
         Available = 1,
         Error = 2,
-        Latest = 3
+        Latest = 3,
+
+        /// <summary>仓库里还没有发布任何版本，属于正常状态而非故障。</summary>
+        NoRelease = 4
     }
 }

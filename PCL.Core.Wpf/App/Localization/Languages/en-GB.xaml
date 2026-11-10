@@ -273,6 +273,7 @@
 
     <!-- Download.Comp -->
 
+    <sys:String x:Key="Download.Comp.Error.CurseForgeUnavailable">The CurseForge source is unavailable (invalid API key or insufficient permissions). Please retry with the Modrinth source.</sys:String>
     <sys:String x:Key="Download.Comp.Error.OperationFailed">A resource download operation failed. See the details below.</sys:String>
     <sys:String x:Key="Download.Comp.Hint.ModrinthUnreachable">Unable to connect to Modrinth; only contents from CurseForge are being displayed. Results might be incomplete.&#xA;Please check your internet and try again.</sys:String>
     <sys:String x:Key="Download.Comp.Link.ResolveFailed">Could not recognise or fetch the resource link</sys:String>
@@ -2562,6 +2563,8 @@
     <sys:String x:Key="Setup.Feedback.Submit.Title">Submit feedback</sys:String>
     <sys:String x:Key="Setup.Feedback.Unavailable.CheckFailed.Action">Check again</sys:String>
     <sys:String x:Key="Setup.Feedback.Unavailable.CheckFailed.Message">Update checking failed, so feedback cannot be sent.&#xA;Connect to the internet, check for updates, confirm that the problem still occurs on the latest version, then send feedback.</sys:String>
+    <sys:String x:Key="Setup.Feedback.Unavailable.NoRelease.Action">View software info</sys:String>
+    <sys:String x:Key="Setup.Feedback.Unavailable.NoRelease.Message">This repository has not published any releases yet, so the current version cannot be confirmed as up to date and feedback cannot be submitted.</sys:String>
     <sys:String x:Key="Setup.Feedback.Unavailable.NotLatest.Action">Update</sys:String>
     <sys:String x:Key="Setup.Feedback.Unavailable.NotLatest.Message">You are not using the latest version of PCL CE, so feedback cannot be sent.&#xA;Update PCL CE, confirm that the problem still occurs on the latest version, then send feedback.</sys:String>
     <sys:String x:Key="Setup.Feedback.Unavailable.Title">Cannot send feedback</sys:String>
@@ -3184,6 +3187,7 @@
     <sys:String x:Key="Setup.Update.Changelog.Unavailable">No changelog available...</sys:String>
     <sys:String x:Key="Setup.Update.Changelog.View">Full changelog</sys:String>
     <sys:String x:Key="Setup.Update.CheckAgain">Check again</sys:String>
+    <sys:String x:Key="Setup.Update.NoRelease">No releases available</sys:String>
     <sys:String x:Key="Setup.Update.CheckFailed">Failed to check for updates</sys:String>
     <sys:String x:Key="Setup.Update.Checking">Checking for updates...</sys:String>
     <sys:String x:Key="Setup.Update.DotNetMissing.DownloadRuntime">Download .NET 10 Runtime</sys:String>
@@ -3192,9 +3196,6 @@
     <sys:String x:Key="Setup.Update.Error.NetworkFailed">Unable to retrieve latest version information. Please check your network connection.</sys:String>
     <sys:String x:Key="Setup.Update.Install">Download and install</sys:String>
     <sys:String x:Key="Setup.Update.Latest">Already up to date</sys:String>
-    <sys:String x:Key="Setup.Update.MirrorChyanCdk.Get">Get CDK</sys:String>
-    <sys:String x:Key="Setup.Update.MirrorChyanCdk.Label">MirrorChyan CDK</sys:String>
-    <sys:String x:Key="Setup.Update.MirrorChyanCdk.ToolTip">MirrorChyan (mirrorchyan.com) is a paid third-party application distribution platform that provides high-speed download sources in China.&#xA;This is an optional service. Leaving the CDK blank does not affect normal use or updates.&#xA;If you have a MirrorChyan CDK, you can provide it to PCL CE, and the launcher will prioritise its high-speed download source for software updates. This can also help reduce pressure on the community update server...</sys:String>
     <sys:String x:Key="Setup.Update.OtherOptions.Placeholder">AquaCL 3 is the first major update of PCL CE. It brings a refreshing new design, uses the latest development technologies, completely rebuilds the core experience, and adds support for macOS, Linux, and other platforms.</sys:String>
     <sys:String x:Key="Setup.Update.OtherOptions.Title">Other update options - upgrade to AquaCL</sys:String>
     <sys:String x:Key="Setup.Update.RestartInstall">Restart to install</sys:String>
