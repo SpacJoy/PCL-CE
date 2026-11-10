@@ -101,7 +101,7 @@
                         Grid.Row="2"
                         Grid.Column="2"
                         Height="35"
-                        local:CustomEventService.EventData="https://github.com/PCL-Community/PCL2-CE"
+                        local:CustomEventService.EventData="https://github.com/SpacJoy/PCL-CE"
                         local:CustomEventService.EventType="OpenUrl"
                         Text="{loc:Loc Setup.About.SourceCode}" />
                 </Grid>
@@ -342,7 +342,7 @@
                     <local:MyTextButton
                         Grid.Row="2"
                         HorizontalAlignment="Center"
-                        local:CustomEventService.EventData="https://github.com/PCL-Community/PCL2-CE/graphs/contributors"
+                        local:CustomEventService.EventData="https://github.com/SpacJoy/PCL-CE/graphs/contributors"
                         local:CustomEventService.EventType="OpenUrl"
                         Text="{loc:Loc Setup.About.Contributors.ViewMore}" />
                 </Grid>
@@ -381,7 +381,7 @@
                         <local:MyButton
                             Margin="0,0,20,0"
                             ColorType="Highlight"
-                            local:CustomEventService.EventData="https://github.com/PCL-Community/PCL2-CE"
+                            local:CustomEventService.EventData="https://github.com/SpacJoy/PCL-CE"
                             local:CustomEventService.EventType="OpenUrl"
                             Padding="13,0"
                             Text="{loc:Loc Setup.About.Legal.CommunitySource}" />
