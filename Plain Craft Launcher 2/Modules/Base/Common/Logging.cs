@@ -361,7 +361,7 @@ public static partial class Common
                 == 1);
         if (shouldOpenLogFolder)
             OpenExplorer(ExePath + @"PCL\Log\");
-        OpenWebsite("https://github.com/PCL-Community/PCL2-CE/issues/");
+        OpenWebsite("https://github.com/SpacJoy/PCL-CE/issues/");
     }
 
     /// <summary>
@@ -382,6 +382,11 @@ public static partial class Common
                 "Setup.Feedback.Unavailable.NotLatest.Message",
                 "Setup.Feedback.Unavailable.NotLatest.Action"),
 
+            // 仓库还没有发布任何版本：这不是网络问题，提示语要说明清楚。
+            UpdateEnums.VersionStatus.NoRelease => (
+                "Setup.Feedback.Unavailable.NoRelease.Message",
+                "Setup.Feedback.Unavailable.NoRelease.Action"),
+
             _ => (
                 "Setup.Feedback.Unavailable.CheckFailed.Message",
                 "Setup.Feedback.Unavailable.CheckFailed.Action")
@@ -399,9 +404,17 @@ public static partial class Common
             ?.Button == 1;
 
         if (shouldOpenUpdatePage)
-            Launcher.frmMain?.PageChange(
+        {
+            // 按钮含义随状态而变：没发版时应该去软件信息页看当前版本，而不是空转在更新页。
+            var targetSubType = status == UpdateEnums.VersionStatus.NoRelease
+                ? FormMain.PageSubType.SetupAbout
+                : FormMain.PageSubType.SetupUpdate;
+            // CanFeedback 常在后台线程被调用（如点击导航空项），页面切换必须回到 UI 线程，
+            // 否则 PageChange 里访问控件会抛“调用线程无法访问此对象”。
+            Common.RunInUi(() => Launcher.frmMain?.PageChange(
                 FormMain.PageType.Setup,
-                FormMain.PageSubType.SetupUpdate);
+                targetSubType));
+        }
 
         return false;
     }
