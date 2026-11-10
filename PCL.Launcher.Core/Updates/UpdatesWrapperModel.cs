@@ -102,6 +102,12 @@ public class UpdatesWrapperModel : IUpdateSource
                 _versionSource = item;
                 return ret;
             }
+            catch (NoReleaseAvailableException ex)
+            {
+                // 仓库还没发版属于正常状态，交给界面提示“暂无可用版本”，不要当成网络故障。
+                LauncherCommon.Log($"[Update] {item.SourceName} 暂无可用的发布版本：{ex.Message}");
+                throw;
+            }
             catch (Exception ex)
             {
                 LauncherCommon.Log(ex, $"[Update] {item.SourceName} 无法获取最新版本信息");

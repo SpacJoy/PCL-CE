@@ -14,6 +14,9 @@ public static class UpdateEnums
     {
         Latest,
         NotLatest,
-        Unknown
+        Unknown,
+
+        /// <summary>仓库还没有发布任何版本，此时无法判断新旧，也不应视为故障。</summary>
+        NoRelease
     }
 }

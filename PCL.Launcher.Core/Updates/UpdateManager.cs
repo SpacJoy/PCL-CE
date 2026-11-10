@@ -11,20 +11,16 @@ public static class UpdateManager
 {
     public static bool isUpdateWaitingRestart;
 
+    /// <summary>本分支的更新来源仓库，检测更新与发布页都指向它。</summary>
+    public const string UpdateOwner = "SpacJoy";
+
+    public const string UpdateRepo = "PCL-CE";
+
     public static UpdatesWrapperModel remoteServer = new(
         new List<IUpdateSource>
         {
-            new UpdatesMirrorChyanModel(),
-            new UpdatesRandomModel(
-            [
-                new UpdatesMinioModel("https://s3.pysio.online/pcl2-ce/", "Pysio"),
-                new UpdatesMinioModel(
-                    "https://staticassets.naids.com/resources/pclce/",
-                    "Naids")
-            ]),
-            new UpdatesMinioModel(
-                "https://github.com/PCL-Community/PCL2_CE_Server/raw/main/",
-                "GitHub")
+            // 直接读取本仓库的 GitHub Releases，不再依赖社区那套 apiv2 清单。
+            new UpdatesGitHubModel(UpdateOwner, UpdateRepo)
         });
 
     public static Loading.LoaderCombo<JsonObject> updateLoader;
@@ -80,6 +76,12 @@ public static class UpdateManager
             return isNewerThanStable && isBetaLatest
                 ? UpdateEnums.VersionStatus.Latest
                 : UpdateEnums.VersionStatus.NotLatest;
+        }
+        catch (NoReleaseAvailableException ex)
+        {
+            // 仓库还没发版属于正常状态，不该在每次检查时弹错误提示。
+            LauncherCommon.Log($"[Update] {ex.Message}");
+            return UpdateEnums.VersionStatus.NoRelease;
         }
         catch (Exception ex)
         {

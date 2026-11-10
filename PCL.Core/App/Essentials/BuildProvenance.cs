@@ -18,8 +18,8 @@ internal static class BuildProvenance
     // 因为通过代码构建的 PCL-CE 或其 fork 一般不会带有我们的 Sentry 汇报端点，此功能就无用了
     public const bool Enabled = true;
 
-    // 如果你在做 PCL-CE fork 并且有自己的 Sentry，记得改掉这里的地址！
-    private const string ReleaseApiUrl = "https://api.github.com/repos/PCL-Community/PCL-CE/releases/tags/v";
+    // 本分支的发布仓库：构建溯源改为对照这里的 Release 校验值。
+    private const string ReleaseApiUrl = "https://api.github.com/repos/SpacJoy/PCL-CE/releases/tags/v";
     private const string DigestPrefix = "sha256:";
 
     private static readonly TimeSpan RequestTimeout = TimeSpan.FromSeconds(8);
