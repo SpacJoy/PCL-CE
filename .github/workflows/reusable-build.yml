@@ -38,6 +38,7 @@ jobs:
         env:
           PCL_WRITE_SECRET: '1'
           PCL_MS_CLIENT_ID: ${{ secrets.CLIENT_ID }}
+          # 未配置 CURSEFORGE_API_KEY 时该功能不可用，但不影响构建
           PCL_CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
           PCL_SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
           PCL_NAID_CLIENT_ID: ${{ secrets.NAID_CLIENT_ID }}
