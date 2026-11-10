@@ -857,8 +857,9 @@ public partial class PageSetupUI : IPageView
                     setupCount += 1;
                 if (!conf.SetupLog)
                     setupCount += 1;
+                // 与工具页同理：这里统计了全部子页面，只有一项都不剩时导航栏才该消失。
                 Launcher.frmSetupLeft.PanItem.Visibility =
-                    setupCount < 2 && !HiddenForceShow ? Visibility.Collapsed : Visibility.Visible;
+                    setupCount == 0 && !HiddenForceShow ? Visibility.Collapsed : Visibility.Visible;
             }
 
             // 工具子页面 (FrmToolsLeft)
@@ -881,7 +882,8 @@ public partial class PageSetupUI : IPageView
                 Launcher.frmToolsLeft.TextToolsCategory.Visibility = isToolsVisible ? Visibility.Visible : Visibility.Collapsed;
                 if (isToolsVisible) Launcher.frmToolsLeft.TextToolsCategory.Opacity = 0.6;
 
-                // 统计工具页可用项数量
+                // 统计工具页可用项数量：只有三项全被隐藏时整个工具页才没有内容可显示，
+                // 隐藏其中一两项只是让对应条目消失，导航栏本身要保留。
                 var toolsCount = 0;
                 if (!conf.ToolsGameLink)
                     toolsCount += 1;
@@ -890,7 +892,7 @@ public partial class PageSetupUI : IPageView
                 if (!conf.ToolsLog)
                     toolsCount += 1;
                 Launcher.frmToolsLeft.PanItem.Visibility =
-                    toolsCount < 3 && !HiddenForceShow ? Visibility.Collapsed : Visibility.Visible;
+                    toolsCount == 0 && !HiddenForceShow ? Visibility.Collapsed : Visibility.Visible;
             }
 
             // 其他入口刷新
