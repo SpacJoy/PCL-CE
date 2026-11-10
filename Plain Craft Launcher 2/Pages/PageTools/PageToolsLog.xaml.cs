@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -293,6 +293,8 @@ public partial class PageToolsLog : IPageView
 
     private void OpenSource(LogSource? source)
     {
+        // 取消上一份文件尚未完成的分帧载入，避免两轮加载互相追加内容
+        _initialLoadPending = false;
         _currentPath = source?.FilePath;
         _pending = [];
         _readOffset = 0;
@@ -336,11 +338,127 @@ public partial class PageToolsLog : IPageView
                 userSummary: Lang.Text("Tools.Log.Error.Load"));
         }
 
-        // 初次载入时连续读取若干块，避免尾部内容逐帧填充
-        for (var i = 0; i < InitialTailBytes / MaxReadBytesPerTick + 1; i++)
+        // 初次载入分两步：先把尾部读进内存并切好行（纯 I/O 与字符串操作，很快），
+        // 再分帧构建段落。段落是 FlowDocument 的真实对象，一帧建几百个就足以卡住界面。
+        PrepareInitialLines();
+        ScheduleInitialLoad();
+    }
+
+    /// <summary>初次载入时预切好的行，<see cref="_initialLineIndex" /> 为下一个待构建的行。</summary>
+    private string[] _initialLines = [];
+
+    private int _initialLineIndex;
+
+    /// <summary>
+    ///     读取日志尾部并切分成行，只保留最终会显示的最后若干行。
+    ///     这一步不做任何界面操作，因此可以在打开页面的那一帧里安全执行。
+    /// </summary>
+    private void PrepareInitialLines()
+    {
+        _initialLines = [];
+        _initialLineIndex = 0;
+        if (_currentPath is null)
+            return;
+
+        try
         {
-            if (!ReadChunk())
-                break;
+            using var stream = new FileStream(_currentPath, FileMode.Open, FileAccess.Read,
+                FileShare.ReadWrite | FileShare.Delete);
+            var length = stream.Length;
+            if (length <= _readOffset)
+                return;
+
+            stream.Seek(_readOffset, SeekOrigin.Begin);
+            var take = (int)Math.Min(length - _readOffset, InitialTailBytes);
+            var buffer = new byte[take];
+            var read = stream.Read(buffer, 0, take);
+            if (read <= 0)
+                return;
+            _readOffset += read;
+
+            var lastNewLine = Array.LastIndexOf(buffer, (byte)'\n', read - 1);
+            if (lastNewLine < 0)
+            {
+                // 整个尾部没有换行，留作待处理残行
+                _pending = buffer[..read];
+                return;
+            }
+
+            _pending = read > lastNewLine + 1 ? buffer[(lastNewLine + 1)..read] : [];
+            var text = _encoding.GetString(buffer, 0, lastNewLine);
+            if (text.Length == 0)
+                return;
+
+            var rawLines = text.Split('\n');
+            var maxLog = _vm.GetMaxLogCount();
+            var kept = new List<string>(rawLines.Length);
+            foreach (var rawLine in rawLines)
+            {
+                var line = rawLine.TrimEnd('\r');
+                if (line.Length == 0)
+                    continue;
+                kept.Add(line);
+            }
+
+            // 只保留最新的若干行：更早的行即使建出来也会立刻被截掉。
+            var skip = maxLog != ulong.MaxValue && (ulong)kept.Count > maxLog
+                ? kept.Count - (int)Math.Min(maxLog, (ulong)kept.Count)
+                : 0;
+            _initialLines = kept.GetRange(skip, kept.Count - skip).ToArray();
+        }
+        catch (IOException)
+        {
+            // 文件被占用，等轮询继续
+        }
+        catch (UnauthorizedAccessException)
+        {
+        }
+    }
+
+    /// <summary>单帧最多新建的日志行数，控制单帧耗时。</summary>
+    private const int InitialLoadLinesPerFrame = 200;
+
+    private bool _initialLoadPending;
+
+    private void ScheduleInitialLoad()
+    {
+        if (_initialLines.Length == 0)
+            return;
+        _initialLoadPending = true;
+        Dispatcher.BeginInvoke(new Action(ContinueInitialLoad), DispatcherPriority.Background);
+    }
+
+    /// <summary>
+    ///     推进一小段初次载入后让出 UI 线程，直到读完当前文件、行数预算耗尽或页面被关闭。
+    /// </summary>
+    private void ContinueInitialLoad()
+    {
+        if (!_initialLoadPending)
+            return;
+        if (!IsLoaded || _currentPath is null)
+        {
+            _initialLoadPending = false;
+            return;
+        }
+
+        // 每帧只构建有限数量的段落，剩下的排到下一帧，保证切换页面后界面立刻可响应。
+        var end = Math.Min(_initialLineIndex + InitialLoadLinesPerFrame, _initialLines.Length);
+        for (var i = _initialLineIndex; i < end; i++)
+            AppendLine(_initialLines[i]);
+
+        _initialLineIndex = end;
+        RefreshCounters();
+        if (CheckAutoScroll.Checked == true)
+            PanBack.ScrollToEnd();
+
+        if (_initialLineIndex < _initialLines.Length)
+        {
+            Dispatcher.BeginInvoke(new Action(ContinueInitialLoad), DispatcherPriority.Background);
+        }
+        else
+        {
+            _initialLines = [];
+            _initialLoadPending = false;
         }
     }
 
@@ -464,6 +582,7 @@ public partial class PageToolsLog : IPageView
         if (maxLog != ulong.MaxValue && (ulong)lines.Length > maxLog)
             start = lines.Length - (int)Math.Min(maxLog, (ulong)lines.Length);
 
+        // 只保留最新的若干行，避免为注定被截掉的旧行白建段落。
         for (var i = start; i < lines.Length; i++)
         {
             var line = lines[i].TrimEnd('\r');
@@ -486,18 +605,26 @@ public partial class PageToolsLog : IPageView
         if (!IsLogContinuationLine(line))
             _lastLevel = GetLevel(line, _lastLevel);
         _counts[(int)_lastLevel]++;
+
         var document = PanLog.Document;
-        document.Blocks.Add(new Paragraph(new Run(line))
-        {
-            Foreground = GetColor(_lastLevel), Margin = new Thickness(0)
-        });
         var maxLog = _vm.GetMaxLogCount();
+        var color = GetColor(_lastLevel);
+        var paragraph = new Paragraph(new Run(line))
+        {
+            Foreground = color, Margin = new Thickness(0)
+        };
+
+        document.Blocks.Add(paragraph);
+        // 超出上限就立刻从头部移除，让文档规模始终贴着上限走。
         while ((ulong)document.Blocks.Count > maxLog && document.Blocks.FirstBlock is not null)
             document.Blocks.Remove(document.Blocks.FirstBlock);
+
+
     }
 
     private void ClearLog()
     {
+        _initialLoadPending = false;
         var document = new FlowDocument { PagePadding = new Thickness(0) };
         PanLog.Document = document;
     }

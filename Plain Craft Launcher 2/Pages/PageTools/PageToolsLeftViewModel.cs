@@ -17,9 +17,11 @@ public class PageToolsLeftViewModel : ViewModelBase
     public FormMain.PageSubType ResolveInitialPageId()
     {
         var hide = Config.Preference.Hide;
-        if (!hide.ToolsLog) return FormMain.PageSubType.ToolsLog;
-        if (!hide.ToolsGameLink) return FormMain.PageSubType.ToolsGameLink;
+        // 默认落在「百宝箱」：它只是若干输入框与按钮，初始化开销远小于日志页，
+        // 不会在进入工具页的第一帧就卡住界面。
         if (!hide.ToolsTest) return FormMain.PageSubType.ToolsTest;
-        return FormMain.PageSubType.ToolsLog;
+        if (!hide.ToolsGameLink) return FormMain.PageSubType.ToolsGameLink;
+        if (!hide.ToolsLog) return FormMain.PageSubType.ToolsLog;
+        return FormMain.PageSubType.ToolsTest;
     }
 }

@@ -1,4 +1,4 @@
-﻿using System.Windows;
+using System.Windows;
 using System.Windows.Controls;
 
 using PCL.Core.App.Localization;
@@ -14,6 +14,8 @@ public partial class PageToolsLeft : IPageView
     public PageToolsLeft()
     {
         InitializeComponent();
+        // 与左侧导航的初始选中项保持一致，否则首次进入工具页会先构造别的子页面。
+        pageID = _vm.ResolveInitialPageId();
         AnimatedControl = PanItem;
         Loaded += PageLinkLeft_Loaded;
         Unloaded += PageOtherLeft_Unloaded;
@@ -87,9 +89,10 @@ public partial class PageToolsLeft : IPageView
     #region 页面切换
 
     /// <summary>
-    ///     当前页面的编号。
+    ///     当前页面的编号。初值取「百宝箱」，与 <see cref="PageToolsLeftViewModel.ResolveInitialPageId" /> 保持一致，
+    ///     否则第一次进入工具页仍会构造日志页（其初始化要读日志文件并构建大量富文本段落）。
     /// </summary>
-    public FormMain.PageSubType pageID = FormMain.PageSubType.ToolsLog;
+    public FormMain.PageSubType pageID;
 
     /// <summary>
     ///     勾选事件改变页面。
