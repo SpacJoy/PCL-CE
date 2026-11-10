@@ -583,7 +583,7 @@ public partial class PageInstanceCompResource : IRefreshable, IPageView, ILocalM
                 Filter = FilterType.All;
                 _vm.SearchText = ""; // 这会触发结果刷新，所以需要在 ModItems 更新之后，详见 #3124 的视频
                 RefreshUi();
-                SetSortMethod(SortMethod.CompName);
+                SetSortMethod(SortMethod.CreateTime);
             });
         }
         catch (Exception ex)
@@ -1531,7 +1531,7 @@ public partial class PageInstanceCompResource : IRefreshable, IPageView, ILocalM
 
     #region 排序
 
-    private SortMethod _currentSortMethod = SortMethod.CompName;
+    private SortMethod _currentSortMethod = SortMethod.CreateTime;
 
     private void SetSortMethod(SortMethod target)
     {

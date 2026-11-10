@@ -47,7 +47,7 @@ public partial class PageInstanceSavesDatapackViewModel : ViewModelBase
 
     [ObservableProperty] private DatapackFilterType _filter = DatapackFilterType.All;
 
-    [ObservableProperty] private DatapackSortMethod _sortMethod = DatapackSortMethod.CompName;
+    [ObservableProperty] private DatapackSortMethod _sortMethod = DatapackSortMethod.CreateTime;
 
     [ObservableProperty] private string _sortText = "";
 
@@ -221,7 +221,7 @@ public partial class PageInstanceSavesDatapackViewModel : ViewModelBase
 
     public PageInstanceSavesDatapackViewModel()
     {
-        SortText = Lang.Text("Instance.Resource.Sort.Text", GetSortName(DatapackSortMethod.CompName));
+        SortText = Lang.Text("Instance.Resource.Sort.Text", GetSortName(DatapackSortMethod.CreateTime));
     }
 
     public static List<string> UpdatingVersions { get; } = [];

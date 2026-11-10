@@ -174,7 +174,7 @@ public partial class PageInstanceSavesDatapack : IRefreshable, IPageView
                 _vm.Filter = FilterType.All;
                 SyncFilterRadios();
                 _vm.SearchText = "";
-                _vm.SetSortMethod(SortMethod.CompName);
+                _vm.SetSortMethod(SortMethod.CreateTime);
                 RefreshUi();
             });
         }
