@@ -974,6 +974,196 @@ public partial class PageInstanceCompResource : IRefreshable, IPageView, ILocalM
         return true;
     }
 
+    /// <summary>
+    ///     处理安装前的重复项，返回用户选择「跳过」的源文件集合。
+    ///     同一 Mod 换了版本号就是另一个文件名，只比文件名拦不住，会并排装两份。
+    /// </summary>
+    private static HashSet<string> ResolveDuplicates(
+        IEnumerable<string> filePathList,
+        string targetFolder,
+        Comp.CompType compType)
+    {
+        var skip = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        List<CompDuplicateCheck.Conflict> conflicts;
+        try
+        {
+            conflicts = CompDuplicateCheck.FindConflicts(filePathList, targetFolder, compType);
+        }
+        catch (Exception ex)
+        {
+            // 检测失败不该挡住安装流程。
+            LogWrapper.Error(ex, "检测重复组件失败");
+            return skip;
+        }
+
+        if (conflicts.Count == 0)
+            return skip;
+
+        var choice = ShowDuplicateDialog(conflicts, compType);
+        switch (choice)
+        {
+            case DuplicateDialogChoice.Skip:
+                foreach (var conflict in conflicts)
+                    skip.Add(conflict.SourcePath);
+                return skip;
+
+            case DuplicateDialogChoice.Disable:
+                foreach (var conflict in conflicts)
+                {
+                    // 安装后文件名与已有文件完全相同 → 直接删掉，否则目录里会留下
+                    // 一对同名的 xxx.jar 与 xxx.jar.disabled，列表按 RawPath 去重只会显示一条。
+                    var targetName = ResolveTargetFileName(conflict.SourceFileName, compType);
+                    foreach (var existing in conflict.Existing)
+                    {
+                        if (IsSameFileName(existing.FileName, targetName))
+                            TryRemoveDuplicate(existing);
+                        else
+                            TryDisableDuplicate(existing);
+                    }
+                }
+
+                return skip;
+
+            case DuplicateDialogChoice.Keep:
+            default:
+                return skip;
+        }
+    }
+
+    /// <summary>按安装规则推导最终落盘的文件名（去掉 .disabled/.old、补全 .jar）。</summary>
+    private static string ResolveTargetFileName(string sourceFileName, Comp.CompType compType)
+    {
+        var name = sourceFileName;
+        if (compType != Comp.CompType.Mod)
+            return name;
+
+        name = name.Replace(".disabled", "").Replace(".old", "");
+        if (!name.Contains('.')) name += ".jar";
+        return name;
+    }
+
+    /// <summary>比较两个文件名是否指向同一个落盘位置（忽略 .disabled 后缀）。</summary>
+    private static bool IsSameFileName(string existingFileName, string targetFileName)
+    {
+        var normalize = (string value) => value
+            .Replace(".disabled", "", StringComparison.OrdinalIgnoreCase)
+            .Replace(".old", "", StringComparison.OrdinalIgnoreCase);
+
+        return string.Equals(
+            normalize(existingFileName),
+            normalize(targetFileName),
+            StringComparison.OrdinalIgnoreCase);
+    }
+
+    /// <summary>同名冲突时直接删除旧文件。</summary>
+    private static void TryRemoveDuplicate(CompDuplicateCheck.ExistingItem item)
+    {
+        try
+        {
+            if (File.Exists(item.Path))
+                File.Delete(item.Path);
+            LogWrapper.Info($"[System] 已删除同名重复组件：{item.FileName}");
+        }
+        catch (Exception ex)
+        {
+            LogWrapper.Error(ex, $"删除重复组件失败：{item.FileName}");
+        }
+    }
+
+    private enum DuplicateDialogChoice
+    {
+        /// <summary>取消本次安装。</summary>
+        Cancel,
+
+        /// <summary>照常安装，保留原有文件（并排放两份）。</summary>
+        Keep,
+
+        /// <summary>处理原有文件：同名直接删除，不同名则加 .disabled 后缀禁用。</summary>
+        Disable,
+
+        /// <summary>跳过这些重复的文件，不安装。</summary>
+        Skip
+    }
+
+    private static DuplicateDialogChoice ShowDuplicateDialog(
+        List<CompDuplicateCheck.Conflict> conflicts,
+        Comp.CompType compType)
+    {
+        var lines = conflicts.Select(conflict =>
+        {
+            var targetName = ResolveTargetFileName(conflict.SourceFileName, compType);
+            var existingNames = string.Join(
+                "、",
+                conflict.Existing.Select(item =>
+                    IsSameFileName(item.FileName, targetName)
+                        ? Lang.Text("Instance.Resource.Duplicate.TagDelete", item.FileName)
+                        : Lang.Text("Instance.Resource.Duplicate.TagDisable", item.FileName)));
+            return Lang.Text(
+                "Instance.Resource.Duplicate.ListItem",
+                conflict.SourceFileName,
+                existingNames);
+        });
+        var message = Lang.Text(
+            "Instance.Resource.Duplicate.Message",
+            string.Join(Environment.NewLine, lines));
+
+        // 弹窗最多三个按钮：默认动作是「处理重复项」，其次「跳过」，最后一档保留原文件继续安装。
+        var result = DialogService.Instance.Show(new TextDialogRequest
+        {
+            Title = Lang.Text("Instance.Resource.Duplicate.Title"),
+            Content = message,
+            Buttons = DialogButtons.Create(
+                "Instance.Resource.Duplicate.Replace",
+                "Instance.Resource.Duplicate.Skip",
+                "Instance.Resource.Duplicate.Keep"),
+            ForceWait = true
+        }).Result?.Button ?? 0;
+
+        return result switch
+        {
+            1 => DuplicateDialogChoice.Disable,
+            2 => DuplicateDialogChoice.Skip,
+            3 => DuplicateDialogChoice.Keep,
+            _ => DuplicateDialogChoice.Cancel
+        };
+    }
+
+    /// <summary>
+    ///     禁用已有组件而不是删除：改名成 <c>xxx.jar.disabled</c>。
+    ///     这样新文件能正常加载，旧文件仍留在目录里，用户随时可以改回来。
+    /// </summary>
+    private static void TryDisableDuplicate(CompDuplicateCheck.ExistingItem item)
+    {
+        try
+        {
+            if (!File.Exists(item.Path))
+                return;
+
+            // 已经是禁用状态就不必再动。
+            if (item.Path.EndsWith(".disabled", StringComparison.OrdinalIgnoreCase))
+            {
+                LogWrapper.Info($"[System] 重复组件已处于禁用状态：{item.FileName}");
+                return;
+            }
+
+            // 沿用 PCL 的禁用约定：xxx.jar -> xxx.jar.disabled。
+            var disabledPath = item.Path + ".disabled";
+            var index = 2;
+            while (File.Exists(disabledPath))
+            {
+                disabledPath = $"{item.Path}.disabled{index}";
+                index++;
+            }
+
+            File.Move(item.Path, disabledPath);
+            LogWrapper.Info($"[System] 已禁用重复组件：{item.FileName} → {Path.GetFileName(disabledPath)}");
+        }
+        catch (Exception ex)
+        {
+            LogWrapper.Error(ex, $"禁用重复组件失败：{item.FileName}");
+        }
+    }
+
     private static void ExecuteModInstallation(McInstance targetMcInstance, IEnumerable<string> filePathList,
         bool refreshList)
     {
@@ -985,8 +1175,14 @@ public partial class PageInstanceCompResource : IRefreshable, IPageView, ILocalM
 
         try
         {
+            // 装上去了还会并存同一个 Mod 的旧版本，先问一句。
+            var skipSet = ResolveDuplicates(filePathList, modFolder, Comp.CompType.Mod);
+
             foreach (var modFile in filePathList)
             {
+                if (skipSet.Contains(modFile))
+                    continue;
+
                 var fileName = Common.GetFileNameFromPath(modFile)
                     .Replace(".disabled", "")
                     .Replace(".old", "");
@@ -997,15 +1193,21 @@ public partial class PageInstanceCompResource : IRefreshable, IPageView, ILocalM
             }
 
             // Success hint
-            if (filePathList.Count() == 1)
+            var installed = filePathList.Where(file => !skipSet.Contains(file)).ToList();
+            if (installed.Count == 0)
             {
-                var installedName = Common.GetFileNameFromPath(filePathList.First()).Replace(".disabled", "")
+                // 全部被跳过时不能报「已安装」。
+                LogWrapper.Info("[System] 所有文件均为重复项，已跳过安装");
+            }
+            else if (installed.Count == 1)
+            {
+                var installedName = Common.GetFileNameFromPath(installed[0]).Replace(".disabled", "")
                     .Replace(".old", "");
                 HintWrapper.Show(Lang.Text("Instance.Resource.Install.SuccessSingle", installedName), HintTheme.Success);
             }
             else
             {
-                HintWrapper.Show(Lang.Text("Instance.Resource.Install.SuccessMultiple", filePathList.Count(), Lang.Text("Download.Comp.Type.Mod")), HintTheme.Success);
+                HintWrapper.Show(Lang.Text("Instance.Resource.Install.SuccessMultiple", installed.Count, Lang.Text("Download.Comp.Type.Mod")), HintTheme.Success);
             }
 
             // 7. Refresh list if necessary
@@ -1158,8 +1360,18 @@ public partial class PageInstanceCompResource : IRefreshable, IPageView, ILocalM
         try
         {
             Directory.CreateDirectory(compFolder);
+
+            // 同一个组件换个版本号就是新文件名，先按组件身份查一次重复。
+            var skipSet = ResolveDuplicates(filePathList, compFolder, compType);
+
+            // 真正写入磁盘的文件名，用于生成准确的成功提示。
+            var installedNames = new List<string>();
+
             foreach (var filePath in filePathList)
             {
+                if (skipSet.Contains(filePath))
+                    continue;
+
                 var newFileName = Common.GetFileNameFromPath(filePath);
                 if (compType == Comp.CompType.Mod)
                 {
@@ -1180,12 +1392,15 @@ public partial class PageInstanceCompResource : IRefreshable, IPageView, ILocalM
                         continue;
 
                 Common.CopyFile(filePath, destFile);
+                installedNames.Add(newFileName);
             }
 
-            if (filePathList.Count() == 1)
-                HintService.Show(Hints.Success(Lang.Text("Instance.Resource.Install.SuccessSingle", Common.GetFileNameFromPath(filePathList.First()))));
+            if (installedNames.Count == 0)
+                Common.Log("[System] 所有文件均被跳过，未安装任何内容");
+            else if (installedNames.Count == 1)
+                HintService.Show(Hints.Success(Lang.Text("Instance.Resource.Install.SuccessSingle", installedNames[0])));
             else
-                HintService.Show(Hints.Success(Lang.Text("Instance.Resource.Install.SuccessMultiple", filePathList.Count(), compTypeName)));
+                HintService.Show(Hints.Success(Lang.Text("Instance.Resource.Install.SuccessMultiple", installedNames.Count, compTypeName)));
 
             // 刷新列表
             if (Launcher.frmMain.pageCurrent == FormMain.PageType.InstanceSetup &&
