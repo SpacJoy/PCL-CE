@@ -7,9 +7,17 @@ namespace PCL.Core.App;
 public static class Secrets
 {
     /// <summary>
+    /// 本地自编译兜底用的 Microsoft OAuth Client ID。
+    /// 上游靠编译期环境变量注入（见 EnvironmentInteropGenerator），但那依赖 Roslyn 编译服务器
+    /// 的环境快照，本地自编译很容易取不到；这里内置一份，仅在两者都为空时生效。
+    /// </summary>
+    private const string FallbackMSClientId = "c14b0370-8d75-42f8-b329-5b60d39e319f";
+
+    /// <summary>
     /// 微软 OAuth 的 Client ID
     /// </summary>
-    public static string MSOAuthClientId { get; } = EnvironmentInterop.GetSecret("MS_CLIENT_ID", readEnvDebugOnly: true).ReplaceNullOrEmpty();
+    public static string MSOAuthClientId { get; } =
+        EnvironmentInterop.GetSecret("MS_CLIENT_ID", readEnvDebugOnly: true).ReplaceNullOrEmpty(FallbackMSClientId);
 
     /// <summary>
     /// CurseForge API 的 Client ID
