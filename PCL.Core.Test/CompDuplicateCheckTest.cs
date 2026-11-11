@@ -138,6 +138,26 @@ public class CompDuplicateCheckTest
         name.Replace(".disabled", "", StringComparison.OrdinalIgnoreCase)
             .Replace(".old", "", StringComparison.OrdinalIgnoreCase);
 
+    [TestMethod]
+    public void DetectsTwoVersionsOfSameModAsDuplicate()
+    {
+        // 真实案例：DangoMusic-1.7.4 与 DangoMusic-1.7.5，文件名不同、版本不同，
+        // 但 fabric.mod.json 的 id 都是 dangomusic —— 属于重复。
+        CreateModJar(Path.Combine(_modsDir, "DangoMusic-1.7.4+26.3-fabric.jar"), "dangomusic", "1.7.4");
+        CreateModJar(Path.Combine(_modsDir, "DangoMusic-1.7.5+26.3-fabric.jar"), "dangomusic", "1.7.5");
+
+        var incoming = CreateModJar(
+            Path.Combine(Path.GetTempPath(), "dango-probe-" + Guid.NewGuid().ToString("N") + ".jar"),
+            "dangomusic", "1.7.6");
+
+        var conflicts = CompDuplicateCheck.FindConflicts([incoming], _modsDir, Comp.CompType.Mod);
+
+        // 两个已有版本都应被识别为同一个模组。
+        Assert.AreEqual(1, conflicts.Count);
+        Assert.AreEqual(2, conflicts[0].Existing.Count);
+        Assert.IsTrue(conflicts[0].Existing.All(e => e.ModId == "dangomusic"));
+    }
+
     private static string CreateModJar(string path, string modId, string version)
     {
         var dir = Path.GetDirectoryName(path);

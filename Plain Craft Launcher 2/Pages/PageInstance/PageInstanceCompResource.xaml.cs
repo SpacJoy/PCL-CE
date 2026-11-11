@@ -712,12 +712,7 @@ public partial class PageInstanceCompResource : IRefreshable, IPageView, ILocalM
             _vm.FilterErrorText = Lang.Text("Instance.Resource.Filter.ErrorWithCount", unavalialeCount);
             _vm.ShowFilterError = Filter == FilterType.Unavailable || unavalialeCount > 0;
             // 查找重复项目
-            var duplicateItems = await Task.Run(() => itemSource.GroupBy(m =>
-            {
-                if (m.Comp is null) return ":Nothing:";
-
-                return m.Comp.Id;
-            }).Where(g => g.Count() > 1 && g.First().Comp is not null).SelectMany(g => g).ToList());
+            var duplicateItems = await Task.Run(() => FindDuplicates(itemSource));
             _vm.FilterDuplicateText = Lang.Text("Instance.Resource.Filter.DuplicateWithCount", duplicateItems.Count);
             _vm.ShowFilterDuplicate = Filter == FilterType.Duplicate || duplicateItems.Any();
 
@@ -972,6 +967,50 @@ public partial class PageInstanceCompResource : IRefreshable, IPageView, ILocalM
         ExecuteModInstallation(targetInstance, filePathList, isModPage);
 
         return true;
+    }
+
+    /// <summary>
+    ///     找出属于「同一个组件」的所有条目，只返回存在重复的那些。
+    /// </summary>
+    private static List<LocalComp.LocalCompFile> FindDuplicates(
+        IEnumerable<LocalComp.LocalCompFile>? items)
+    {
+        if (items is null)
+            return [];
+
+        var result = new List<LocalComp.LocalCompFile>();
+        var groups = items
+            .Select(item => (Item: item, Key: GetDuplicateKey(item)))
+            .Where(pair => pair.Key is not null)
+            .GroupBy(pair => pair.Key!, StringComparer.OrdinalIgnoreCase);
+
+        foreach (var group in groups)
+        {
+            var members = group.Select(pair => pair.Item).ToList();
+            if (members.Count > 1)
+                result.AddRange(members);
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    ///     计算用于判断「是否同一个组件」的键。
+    ///     优先用联网识别出的工程 ID；本地 jar 常常没有联网信息（<c>Comp</c> 为 null），
+    ///     此时退回 Mod 自述的 ID。两者都拿不到才放弃判定，避免把不同 Mod 误判为重复。
+    /// </summary>
+    private static string? GetDuplicateKey(LocalComp.LocalCompFile? item)
+    {
+        if (item is null)
+            return null;
+
+        if (!string.IsNullOrWhiteSpace(item.Comp?.Id))
+            return "P:" + item.Comp!.Id.Trim().ToLowerInvariant();
+
+        if (!string.IsNullOrWhiteSpace(item.ModId))
+            return "M:" + item.ModId!.Trim().ToLowerInvariant();
+
+        return null;
     }
 
     /// <summary>
@@ -1724,9 +1763,14 @@ public partial class PageInstanceCompResource : IRefreshable, IPageView, ILocalM
                     var itemSource = IsSearching
                         ? _searchResult
                         : LocalComp.CompResourceListLoader.output ?? new List<LocalComp.LocalCompFile>();
-                    return itemSource is not null && itemSource.Where(m =>
-                        checkingMod.Comp is not null && m.Comp is not null &&
-                        (checkingMod.Comp.Id ?? "") == (m.Comp.Id ?? "")).Skip(1).Any();
+                    if (itemSource is null)
+                        return false;
+
+                    var key = GetDuplicateKey(checkingMod);
+                    if (key is null)
+                        return false;
+
+                    return itemSource.Any(m => !ReferenceEquals(m, checkingMod) && GetDuplicateKey(m) == key);
                 }
 
             default:
